@@ -1,0 +1,13 @@
+
+# modules
+node_modules
+
+# generated files
+dist
+
+# env
+.env
+
+# lock files
+yarn.lock
+package-lock.json

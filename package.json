@@ -1,0 +1,53 @@
+{
+  "name": "ametros-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/app.ts",
+    "dev": "nodemon app.ts",
+    "build": "tsc",
+    "generate:routes": "yarn ts-node src/utils/generate-routes",
+    "generate:types": "openapi-typescript openapi.yaml --output src/types/gen.ts && ts-node ./src/utils/generate-types",
+    "prisma:merge": "ts-node src/utils/merge-schemas.ts",
+    "prisma:generate": "npx prisma generate --schema=src/prisma/schema.prisma",
+    "prisma:all": "yarn prisma:generate && npx prisma migrate dev",
+    "generate:all": "yarn generate:routes && yarn generate:types"
+  },
+  "prisma": {
+    "schema": "./src/prisma/schema.prisma"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@prisma/client": "^6.2.1",
+    "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
+    "cookie": "^1.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.9",
+    "openapi-backend": "^5.11.1",
+    "openapi-typescript": "^7.6.0",
+    "prisma": "^6.2.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "2.4.6",
+    "@types/cookie": "^0.6.0",
+    "@types/cors": "2.8.17",
+    "@types/express": "4.17.21",
+    "@types/http-status": "1.1.2",
+    "@types/js-yaml": "4.0.9",
+    "@types/jsonwebtoken": "9.0.6",
+    "@types/node": "22.7.5",
+    "@types/pg": "8.11.9",
+    "@types/uuid": "10.0.0",
+    "@types/ws": "8.5.12"
+  }
+}
