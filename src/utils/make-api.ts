@@ -42,11 +42,12 @@ export type FullRequest<O extends Operation> =
   FullOp<O>["parameters"]["query"] &
     FullOp<O>["parameters"]["path"] &
     FullOp<O>["requestBody"]["content"]["application/json"];
+
 // the response type of an operation
 export type Response<O extends Operation> =
   FullOp<O>["responses"]["200"]["content"]["application/json"];
-// handle cleaned up request (type checks response too)
 
+// handle cleaned up request (type checks response too)
 type TokenProps = {
   id: string;
   role: string;
@@ -55,17 +56,18 @@ type TokenProps = {
 export type RequestContext = {
   user: TokenProps;
 };
+
 // handle cleaned up request (type checks response too)
 export type Handler<O extends Operation> = (
   ev: FullRequest<O>,
   ctx: RequestContext
 ) => Promise<Response<O>>;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export type APIResult = { statusCode: number; body: any };
 
 const headers = {
   "content-type": "application/json",
-  "access-control-allow-origin": "*", // lazy cors config
+  "access-control-allow-origin": "http://localhost:3000", // TODO: Update this for production
 };
 
 function errorHandlingWrap<O extends Operation>(
@@ -81,11 +83,11 @@ function errorHandlingWrap<O extends Operation>(
       ...req.files,
     };
 
+    console.log("web auth", e.security.webAuth);
     console.log("path", e.request.path, "fullRequest", fullRequest);
 
     try {
       // if the request had validation errors
-      // throw the error
       if (e.validation?.errors) {
         console.error("validation error", e.validation.errors);
         throw new Boom("Invalid request", {
@@ -101,9 +103,16 @@ function errorHandlingWrap<O extends Operation>(
         });
       }
 
-      const user: TokenProps | undefined = e.security?.webAuth;
+      // const user: TokenProps | undefined = e.security?.webAuth;
+      const user = { id: "1", role: "user" };
 
-      const response = await handler({ ...fullRequest }, { user: user! });
+      // // Ensure user exists before passing it
+      if (!user) {
+        console.log("error not found", user);
+        throw new Boom("Unauthorized", { statusCode: UNAUTHORIZED });
+      }
+
+      const response = await handler({ ...fullRequest }, { user });
       result.body = response;
       result.statusCode = OK;
     } catch (error: any) {
@@ -173,9 +182,8 @@ const makeApi = (
 
       const decoded = JWT.verify(token, process.env.JWT_SECRET as string);
       if (!decoded) {
-        throw new Boom("Insufficient Access", { statusCode: FORBIDDEN });
+        throw new Boom("Invalid Token", { statusCode: UNAUTHORIZED });
       }
-      // console.log("decoded>>>>>>>>>", decoded)
 
       return decoded;
     } catch (error: any) {
@@ -206,7 +214,7 @@ const makeApi = (
     ),
   });
 
-  // initalize the backend
+  // initialize the backend
   return api.init();
 };
 

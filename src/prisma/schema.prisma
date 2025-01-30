@@ -19,7 +19,7 @@ model User {
   lastName                   String?
   email                      String
   password                   String
-  registrationCode           Int?     @default(0)
+  registrationCode           String?  @default("8888")
   role                       Role?    @default(USER)
   acceptedTermsAndConditions Boolean  @default(false)
   updatedAt                  DateTime @updatedAt

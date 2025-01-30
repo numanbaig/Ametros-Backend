@@ -129,9 +129,9 @@ components:
           format: password
           example: "securePassword123!"
         registrationCode:
-          type: number
+          type: string
           nullable: true
-          example: 8888
+          example: "8888"
         role:
           type: string
           enum: ["USER", "ADMIN"]

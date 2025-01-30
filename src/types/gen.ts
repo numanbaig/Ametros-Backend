@@ -58,7 +58,7 @@ export interface components {
              */
             password: string;
             /** @example 8888 */
-            registrationCode?: number | null;
+            registrationCode?: string | null;
             /**
              * @default USER
              * @enum {string}

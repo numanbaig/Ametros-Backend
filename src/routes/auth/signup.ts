@@ -14,6 +14,8 @@ const handler: Handler<"signup"> = async (request) => {
     acceptedTermsAndConditions,
   } = request;
 
+  console.log("inside signup", request);
+
   // Input validation
   if (
     !firstName?.trim() ||
@@ -41,9 +43,9 @@ const handler: Handler<"signup"> = async (request) => {
     // Create user
     const user = await prisma.user.create({
       data: {
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        email: email.toLowerCase().trim(),
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
         password: hashedPassword,
         registrationCode: registrationCode,
         role: role || "USER",
@@ -51,7 +53,11 @@ const handler: Handler<"signup"> = async (request) => {
       },
     });
 
-    return { success: true, userId: user.id };
+    return {
+      success: true,
+      message: "User created successfully",
+      userId: user.id,
+    };
   } catch (error) {
     // Log the actual error for debugging
     console.error("Signup error:", error);

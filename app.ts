@@ -2,10 +2,17 @@ import { makeServer } from "./src/server";
 import { connectToDatabase } from "./src/db";
 
 export const start = async () => {
-  console.log("Starting server...");
+  console.log("🚀 Starting server...");
+
   const server = makeServer();
-  server.start();
-  connectToDatabase();
+
+  // ✅ Connect to the database
+  await connectToDatabase();
+
+  // ✅ Start the server
+  await server.start();
 };
 
-start();
+start().catch((err) => {
+  console.error("❌ Server failed to start:", err);
+});
